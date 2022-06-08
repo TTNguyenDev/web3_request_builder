@@ -48,13 +48,6 @@
           arrow
           :on-shown="() => tippyActions.focus()"
         >
-          <template #trigger>
-            <ButtonSecondary
-              svg="help-circle"
-              class="!rounded-none"
-              :label="`${t('app.help')}`"
-            />
-          </template>
           <div
             ref="tippyActions"
             class="flex flex-col focus:outline-none"
