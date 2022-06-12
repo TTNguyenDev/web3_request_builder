@@ -9,7 +9,7 @@
     "pnpm": ">=3"
   },
   "scripts": {
-    "dev": "pnpm exec npm-run-all -p -l dev:*",
+    "dev": "nuxt",
     "dev:nuxt": "nuxt",
     "dev:gql-codegen": "graphql-codegen --config gql-codegen.yml --watch",
     "build": "nuxt build",
