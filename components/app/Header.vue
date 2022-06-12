@@ -11,38 +11,6 @@
         />
       </div>
       <div class="inline-flex items-center space-x-2">
-        <ButtonSecondary
-          id="installPWA"
-          v-tippy="{ theme: 'tooltip' }"
-          :title="t('header.install_pwa')"
-          svg="download"
-          class="rounded hover:bg-primaryDark focus-visible:bg-primaryDark"
-          @click.native="showInstallPrompt()"
-        />
-        <ButtonSecondary
-          v-tippy="{ theme: 'tooltip', allowHTML: true }"
-          :title="`${t('app.search')} <xmp>/</xmp>`"
-          svg="search"
-          class="rounded hover:bg-primaryDark focus-visible:bg-primaryDark"
-          @click.native="invokeAction('modals.search.toggle')"
-        />
-        <ButtonSecondary
-          v-tippy="{ theme: 'tooltip', allowHTML: true }"
-          :title="`${
-            mdAndLarger ? t('support.title') : t('app.options')
-          } <xmp>?</xmp>`"
-          svg="life-buoy"
-          class="rounded hover:bg-primaryDark focus-visible:bg-primaryDark"
-          @click.native="invokeAction('modals.support.toggle')"
-        />
-        <ButtonSecondary
-          v-if="currentUser === null"
-          svg="upload-cloud"
-          :label="t('header.save_workspace')"
-          filled
-          class="hidden md:flex"
-          @click.native="showLogin = true"
-        />
         <ButtonPrimary
           v-if="currentUser === null"
           :label="t('header.login')"
@@ -142,7 +110,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "@nuxtjs/composition-api"
-import { breakpointsTailwind, useBreakpoints, useNetwork } from "@vueuse/core"
+import { useNetwork } from "@vueuse/core"
 import initializePwa from "~/helpers/pwa"
 import { probableUser$ } from "~/helpers/fb/auth"
 import { getLocalConfig, setLocalConfig } from "~/newstore/localpersistence"
@@ -151,7 +119,6 @@ import {
   useI18n,
   useToast,
 } from "~/helpers/utils/composables"
-import { invokeAction } from "~/helpers/actions"
 
 const t = useI18n()
 
@@ -166,9 +133,6 @@ const showInstallPrompt = ref(() => Promise.resolve()) // Async no-op till it is
 
 const showLogin = ref(false)
 const showTeamsModal = ref(false)
-
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const mdAndLarger = breakpoints.greater("md")
 
 const network = reactive(useNetwork())
 
