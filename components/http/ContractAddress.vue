@@ -1,16 +1,9 @@
 <template>
   <div class="flex flex-col flex-1">
     <div class="flex flex-1 border-b border-dividerLight">
-      <div class="w-2/3 border-r border-dividerLight">
-        <div class="flex flex-1 border-b border-dividerLight">
+      <div class="w-full mt-2">
+        <div class="flex flex-1 border border-dividerLight">
           <SmartEnvInput v-model="bearerToken" placeholder="Address" />
-        </div>
-      </div>
-      <div
-        class="sticky h-full p-4 overflow-auto bg-primary top-upperTertiaryStickyFold min-w-46 max-w-1/3 z-9"
-      >
-        <div class="pb-2 text-secondaryLight">
-          {{ $t("helpers.authorization") }}
         </div>
       </div>
     </div>

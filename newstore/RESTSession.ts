@@ -367,7 +367,7 @@ const dispatchers = defineDispatchers({
 const restSessionStore = new DispatchingStore(defaultRESTSession, dispatchers)
 
 export function getRESTRequest() {
-  const request = { ...restSessionStore.subject$.value.request, params: [] }
+  const request = { ...restSessionStore.subject$.value.request }
   console.log(request)
   return request
 }
