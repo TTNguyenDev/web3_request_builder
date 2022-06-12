@@ -12,7 +12,7 @@
     "dev": "pnpm exec npm-run-all -p -l dev:*",
     "dev:nuxt": "nuxt",
     "dev:gql-codegen": "graphql-codegen --config gql-codegen.yml --watch",
-    "build": "vue-tsc --noEmit && nuxt build",
+    "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate --modern",
     "analyze": "npx nuxt build -a",
