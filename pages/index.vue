@@ -48,14 +48,12 @@ import {
 import { loadRequestFromSync, startRequestSync } from "~/helpers/fb/request"
 import { onLoggedIn } from "~/helpers/fb/auth"
 import { oauthRedirect } from "~/helpers/oauth"
-import { BlockChainConnector } from "~/blockchain"
 
 function bindRequestToURLParams() {
   const { route } = useContext()
   // Get URL parameters and set that as the request
   onMounted(() => {
     const query = route.value.query
-    BlockChainConnector.instance.initNear()
     // If query params are empty, or contains code or error param (these are from Oauth Redirect)
     // We skip URL params parsing
     if (Object.keys(query).length === 0 || query.code || query.error) return

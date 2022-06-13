@@ -171,7 +171,8 @@
     "shortcodes": "Shortcodes are empty",
     "team_name": "Team name empty",
     "teams": "You don't belong to any teams",
-    "tests": "There are no tests for this request"
+    "tests": "There are no tests for this request",
+    "contract_address": "Contract address is empty"
   },
   "environment": {
     "add_to_global": "Add to Global",

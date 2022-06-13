@@ -161,7 +161,7 @@ const dispatchers = defineDispatchers({
         newRequestType = "write_function"
         break
       case "PAYABLE":
-        newRequestType = "write_function"
+        newRequestType = "payable_function"
         break
     }
     const body = curr.request.body
@@ -230,6 +230,8 @@ const dispatchers = defineDispatchers({
     reqBody.params.account_id = newAuth.token
     const newReqBody = JSON.stringify(reqBody)
     body.body = newReqBody
+    // @ts-ignore
+    localStorage.setItem("contract_address", newAuth.token)
     return {
       request: {
         ...curr.request,
@@ -665,6 +667,8 @@ export const restMethod$ = restSessionStore.subject$.pipe(
         return "VIEW"
       case "write_function":
         return "NONPAYABLE"
+      case "payable_function":
+        return "PAYABLE"
     }
   }),
   distinctUntilChanged()

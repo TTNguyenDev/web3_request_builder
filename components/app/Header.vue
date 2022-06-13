@@ -14,17 +14,9 @@
         <ButtonPrimary
           v-if="currentUser === null"
           :label="t('header.login')"
-          @click.native="showLogin = true"
+          @click.native="handleLogin"
         />
         <div v-else class="inline-flex items-center space-x-2">
-          <ButtonPrimary
-            v-tippy="{ theme: 'tooltip' }"
-            :title="t('team.invite_tooltip')"
-            :label="t('team.invite')"
-            svg="user-plus"
-            class="!bg-green-500 !bg-opacity-15 !text-green-500 !hover:bg-opacity-10 !hover:bg-green-400 !hover:text-green-600"
-            @click.native="showTeamsModal = true"
-          />
           <span class="px-2">
             <tippy
               ref="options"
@@ -112,13 +104,14 @@
 import { onMounted, reactive, ref } from "@nuxtjs/composition-api"
 import { useNetwork } from "@vueuse/core"
 import initializePwa from "~/helpers/pwa"
-import { probableUser$ } from "~/helpers/fb/auth"
 import { getLocalConfig, setLocalConfig } from "~/newstore/localpersistence"
 import {
   useReadonlyStream,
   useI18n,
   useToast,
 } from "~/helpers/utils/composables"
+import { BlockChainConnector } from "~/blockchain"
+import { currentUserInfo$ } from "~/helpers/teams/BackendUserInfo"
 
 const t = useI18n()
 
@@ -131,12 +124,16 @@ const toast = useToast()
  */
 const showInstallPrompt = ref(() => Promise.resolve()) // Async no-op till it is initialized
 
-const showLogin = ref(false)
-const showTeamsModal = ref(false)
-
 const network = reactive(useNetwork())
 
-const currentUser = useReadonlyStream(probableUser$, null)
+const currentUser = useReadonlyStream(currentUserInfo$, null)
+
+const handleLogin = () => {
+  const contractAddress = localStorage.getItem("contract_address")
+  if (contractAddress)
+    BlockChainConnector.instance.walletConnection.requestSignIn(contractAddress)
+  else toast.error(`${t("empty.contract_address")}`)
+}
 
 onMounted(() => {
   // Initializes the PWA code - checks if the app is installed,

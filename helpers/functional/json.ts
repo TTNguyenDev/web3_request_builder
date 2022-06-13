@@ -39,7 +39,9 @@ export const safeParseJSON = (str: string): O.Option<object> =>
             request_type:
               item.state_mutability === "read"
                 ? "call_function"
-                : "write_function",
+                : item.state_mutability === "write"
+                ? "write_function"
+                : "payable_function",
             method_name: item.name,
             args_base64: Buffer.from(
               JSON.stringify(

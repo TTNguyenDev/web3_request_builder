@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@nuxtjs/composition-api"
-import { signOutUser } from "~/helpers/fb/auth"
+import { BlockChainConnector } from "~/blockchain"
 
 export default defineComponent({
   props: {
@@ -45,7 +45,8 @@ export default defineComponent({
   methods: {
     async logout() {
       try {
-        await signOutUser()
+        await BlockChainConnector.instance.walletConnection.signOut()
+        window.location.reload()
         this.$toast.success(`${this.$t("auth.logged_out")}`)
       } catch (e) {
         console.error(e)

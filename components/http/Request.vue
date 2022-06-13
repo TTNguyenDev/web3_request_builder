@@ -160,24 +160,6 @@
             @keyup.escape="saveOptions.tippy().hide()"
           >
             <SmartItem
-              ref="copyRequestAction"
-              :label="shareButtonText"
-              :svg="copyLinkIcon"
-              :loading="fetchingShareLink"
-              :shortcut="['C']"
-              @click.native="
-                () => {
-                  copyRequest()
-                }
-              "
-            />
-            <SmartItem
-              svg="link-2"
-              :label="`${t('request.view_my_links')}`"
-              to="/profile"
-            />
-            <hr />
-            <SmartItem
               ref="saveRequestAction"
               :label="`${t('request.save_as')}`"
               svg="folder-plus"
@@ -294,6 +276,11 @@ const newSendRequest = async () => {
     return
   }
 
+  if (!localStorage.getItem("contract_address")) {
+    toast.error(`${t("empty.contract_address")}`)
+    return
+  }
+
   // ensureMethodInEndpoint()
 
   loading.value = true
@@ -390,16 +377,6 @@ const copyLinkIcon = refAutoReset<"share-2" | "copy" | "check">(
 
 const shareLink = ref<string | null>("")
 const fetchingShareLink = ref(false)
-
-const shareButtonText = computed(() => {
-  if (shareLink.value) {
-    return shareLink.value
-  } else if (fetchingShareLink.value) {
-    return t("state.loading")
-  } else {
-    return t("request.copy_link")
-  }
-})
 
 const request = useReadonlyStream(restRequest$, getRESTRequest())
 
