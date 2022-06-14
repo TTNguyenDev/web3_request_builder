@@ -593,7 +593,8 @@
     "types": "Types",
     "variables": "Variables",
     "websocket": "WebSocket",
-    "contract_address": "Contract Address"
+    "contract_address": "Contract Address",
+    "deposit": "Deposit"
   },
   "team": {
     "already_member": "You are already a member of this team. Contact your team owner.",

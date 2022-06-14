@@ -231,7 +231,7 @@ const dispatchers = defineDispatchers({
     const newReqBody = JSON.stringify(reqBody)
     body.body = newReqBody
     // @ts-ignore
-    localStorage.setItem("contract_address", newAuth.token)
+    localStorage.setItem("contract_address", newAuth.token || "")
     return {
       request: {
         ...curr.request,

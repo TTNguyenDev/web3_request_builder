@@ -5,7 +5,7 @@ import * as T from "fp-ts/Task"
 import * as TE from "fp-ts/TaskEither"
 import * as O from "fp-ts/Option"
 import { pipe } from "fp-ts/function"
-import { transactions } from "near-api-js"
+import { transactions, utils } from "near-api-js"
 import { BN } from "bn.js"
 import AxiosStrategy, {
   cancelRunningAxiosRequest,
@@ -126,7 +126,6 @@ export function createRESTNetworkRequestStream(
   request.params.forEach((e) => {
     if (e.active) args[e.key] = e.value
   })
-
   pipe(
     TE.Do,
 
@@ -177,7 +176,11 @@ export function createRESTNetworkRequestStream(
                       body.params.method_name,
                       args,
                       new BN("30000000000000"),
-                      new BN("0")
+                      new BN(
+                        request.auth.amount
+                          ? utils.format.parseNearAmount(request.auth.amount)
+                          : "0"
+                      )
                     ),
                   ],
                 }),
