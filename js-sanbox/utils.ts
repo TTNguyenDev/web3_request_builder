@@ -64,7 +64,6 @@ export function setEnv(
     }
   }
 
-  // eslint-disable-next-line eqeqeq
   const indexInGlobal = envs.global.findIndex((x) => x.key == envName)
 
   // Found a match in globals

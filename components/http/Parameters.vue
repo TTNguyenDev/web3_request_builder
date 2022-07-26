@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col flex-1">
-    <div
-      class="sticky z-10 flex items-center justify-between pl-4 border-b bg-primary border-dividerLight top-upperMobileSecondaryStickyFold sm:top-upperSecondaryStickyFold"
+  <div class="flex flex-col flex-1 mt-2">
+    <!-- <div
+      class="mt-4 sticky z-10 flex items-center justify-between pl-4 border-b bg-primary border-dividerLight top-upperMobileSecondaryStickyFold sm:top-upperSecondaryStickyFold"
     >
       <label class="font-semibold text-secondaryLight">
         {{ t("request.parameter_list") }}
@@ -35,9 +35,36 @@
           @click.native="addParam"
         />
       </div>
-    </div>
+    </div> -->
     <div v-if="bulkMode" ref="bulkEditor" class="flex flex-col flex-1"></div>
     <div v-else>
+      <div
+        class="h-8 flex items-center border-y divide-x divide-dividerLight border-dividerLight draggable-content group"
+      >
+        <span>
+          <ButtonSecondary
+            svg="grip-vertical"
+            class="cursor-auto text-primary hover:text-primary"
+            tabindex="-1"
+            :readonly="true"
+          />
+        </span>
+        <div
+          class="text-secondary font-semibold w-full h-full pl-4 flex items-center"
+        >
+          Type
+        </div>
+        <div
+          class="text-secondary font-semibold w-full h-full pl-4 flex items-center"
+        >
+          Name
+        </div>
+        <div
+          class="text-secondary font-semibold w-full h-full pl-4 flex items-center"
+        >
+          Value
+        </div>
+      </div>
       <draggable
         v-model="workingParams"
         animation="250"
@@ -64,16 +91,14 @@
             />
           </span>
           <SmartEnvInput
+            v-model="param.type"
+            class="pointer-events-none"
+            :readonly="true"
+          />
+          <SmartEnvInput
             v-model="param.key"
-            :placeholder="`${t('count.parameter', { count: index + 1 })}`"
-            @change="
-              updateParam(index, {
-                id: param.id,
-                key: $event,
-                value: param.value,
-                active: param.active,
-              })
-            "
+            class="pointer-events-none"
+            :readonly="true"
           />
           <SmartEnvInput
             v-model="param.value"
@@ -84,10 +109,11 @@
                 key: param.key,
                 value: $event,
                 active: param.active,
+                type: param.type,
               })
             "
           />
-          <span>
+          <!-- <span>
             <ButtonSecondary
               v-tippy="{ theme: 'tooltip' }"
               :title="
@@ -125,7 +151,7 @@
               color="red"
               @click.native="deleteParam(index)"
             />
-          </span>
+          </span> -->
         </div>
       </draggable>
       <div
@@ -200,25 +226,25 @@ const params = useStream(restParams$, [], setRESTParams) as Ref<HoppRESTParam[]>
 
 // The UI representation of the parameters list (has the empty end param)
 const workingParams = ref<Array<HoppRESTParam & { id: number }>>([
-  {
-    id: idTicker.value++,
-    key: "",
-    value: "",
-    active: true,
-  },
+  // {
+  //   id: idTicker.value++,
+  //   key: "",
+  //   value: "",
+  //   active: true,
+  // },
 ])
 
 // Rule: Working Params always have last element is always an empty param
-watch(workingParams, (paramsList) => {
-  if (paramsList.length > 0 && paramsList[paramsList.length - 1].key !== "") {
-    workingParams.value.push({
-      id: idTicker.value++,
-      key: "",
-      value: "",
-      active: true,
-    })
-  }
-})
+// watch(workingParams, (paramsList) => {
+//   if (paramsList.length > 0 && paramsList[paramsList.length - 1].key !== "") {
+//     workingParams.value.push({
+//       id: idTicker.value++,
+//       key: "",
+//       value: "",
+//       active: true,
+//     })
+//   }
+// })
 
 // Sync logic between params and working/bulk params
 watch(
@@ -276,22 +302,22 @@ watch(workingParams, (newWorkingParams) => {
   }
 })
 
-watch(bulkParams, (newBulkParams) => {
-  const filteredBulkParams = pipe(
-    parseRawKeyValueEntriesE(newBulkParams),
-    E.map(
-      flow(
-        RA.filter((e) => e.key !== ""),
-        RA.toArray
-      )
-    ),
-    E.getOrElse(() => [] as RawKeyValueEntry[])
-  )
+// watch(bulkParams, (newBulkParams) => {
+//   const filteredBulkParams = pipe(
+//     parseRawKeyValueEntriesE(newBulkParams),
+//     E.map(
+//       flow(
+//         RA.filter((e) => e.key !== ""),
+//         RA.toArray
+//       )
+//     ),
+//     E.getOrElse(() => [] as RawKeyValueEntry[])
+//   )
 
-  if (!isEqual(params.value, filteredBulkParams)) {
-    params.value = filteredBulkParams
-  }
-})
+//   if (!isEqual(params.value, filteredBulkParams)) {
+//     params.value = filteredBulkParams
+//   }
+// })
 
 const addParam = () => {
   workingParams.value.push({
@@ -299,6 +325,7 @@ const addParam = () => {
     key: "",
     value: "",
     active: true,
+    type: "",
   })
 }
 
@@ -308,44 +335,44 @@ const updateParam = (index: number, param: HoppRESTParam & { id: number }) => {
   )
 }
 
-const deleteParam = (index: number) => {
-  const paramsBeforeDeletion = cloneDeep(workingParams.value)
+// const deleteParam = (index: number) => {
+//   const paramsBeforeDeletion = cloneDeep(workingParams.value)
 
-  if (
-    !(
-      paramsBeforeDeletion.length > 0 &&
-      index === paramsBeforeDeletion.length - 1
-    )
-  ) {
-    if (deletionToast.value) {
-      deletionToast.value.goAway(0)
-      deletionToast.value = null
-    }
+//   if (
+//     !(
+//       paramsBeforeDeletion.length > 0 &&
+//       index === paramsBeforeDeletion.length - 1
+//     )
+//   ) {
+//     if (deletionToast.value) {
+//       deletionToast.value.goAway(0)
+//       deletionToast.value = null
+//     }
 
-    deletionToast.value = toast.success(`${t("state.deleted")}`, {
-      action: [
-        {
-          text: `${t("action.undo")}`,
-          onClick: (_, toastObject) => {
-            workingParams.value = paramsBeforeDeletion
-            toastObject.goAway(0)
-            deletionToast.value = null
-          },
-        },
-      ],
+//     deletionToast.value = toast.success(`${t("state.deleted")}`, {
+//       action: [
+//         {
+//           text: `${t("action.undo")}`,
+//           onClick: (_, toastObject) => {
+//             workingParams.value = paramsBeforeDeletion
+//             toastObject.goAway(0)
+//             deletionToast.value = null
+//           },
+//         },
+//       ],
 
-      onComplete: () => {
-        deletionToast.value = null
-      },
-    })
-  }
+//       onComplete: () => {
+//         deletionToast.value = null
+//       },
+//     })
+//   }
 
-  workingParams.value = pipe(
-    workingParams.value,
-    A.deleteAt(index),
-    O.getOrElseW(() => throwError("Working Params Deletion Out of Bounds"))
-  )
-}
+//   workingParams.value = pipe(
+//     workingParams.value,
+//     A.deleteAt(index),
+//     O.getOrElseW(() => throwError("Working Params Deletion Out of Bounds"))
+//   )
+// }
 
 const clearContent = () => {
   // set params list to the initial state
@@ -355,6 +382,7 @@ const clearContent = () => {
       key: "",
       value: "",
       active: true,
+      type: "",
     },
   ]
 

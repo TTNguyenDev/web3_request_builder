@@ -1,6 +1,9 @@
+import { pipe } from "fp-ts/function"
+import * as E from "fp-ts/Either"
 import { BehaviorSubject } from "rxjs"
 import { authIdToken$ } from "../fb/auth"
-import { BlockChainConnector } from "~/blockchain"
+import { runGQLQuery } from "../backend/GQLClient"
+import { GetUserInfoDocument } from "../backend/graphql"
 
 /*
  * This file deals with interfacing data provided by the
@@ -38,8 +41,8 @@ export const currentUserInfo$ = new BehaviorSubject<UserInfo | null>(null)
  * Initializes the currenUserInfo$ view and sets up its update mechanism
  */
 export function initUserInfo() {
-  authIdToken$.subscribe(() => {
-    if (BlockChainConnector.instance.account.accountId) {
+  authIdToken$.subscribe((token) => {
+    if (token) {
       updateUserInfo()
     } else {
       currentUserInfo$.next(null)
@@ -50,11 +53,23 @@ export function initUserInfo() {
 /**
  * Runs the actual user info fetching
  */
-function updateUserInfo() {
-  currentUserInfo$.next({
-    uid: BlockChainConnector.instance.account.accountId,
-    displayName: BlockChainConnector.instance.account.accountId,
-    email: null,
-    photoURL: null,
+async function updateUserInfo() {
+  const result = await runGQLQuery({
+    query: GetUserInfoDocument,
   })
+
+  currentUserInfo$.next(
+    pipe(
+      result,
+      E.matchW(
+        () => null,
+        (x) => ({
+          uid: x.me.uid,
+          displayName: x.me.displayName ?? null,
+          email: x.me.email ?? null,
+          photoURL: x.me.photoURL ?? null,
+        })
+      )
+    )
+  )
 }

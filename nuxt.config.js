@@ -29,7 +29,7 @@ export default {
   ssr: false,
 
   // Target (https://go.nuxtjs.dev/config-target)
-  target: "server",
+  target: "static",
 
   // Default: localhost
   server: {

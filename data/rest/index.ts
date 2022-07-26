@@ -14,6 +14,7 @@ export type HoppRESTParam = {
   key: string
   value: string
   active: boolean
+  type: string
 }
 
 export type HoppRESTHeader = {
@@ -176,14 +177,17 @@ export function translateToNewRequest(x: any): HoppRESTRequest {
         key,
         value,
         active,
+        type,
       }: {
         key: string
         value: string
         active: boolean
+        type: string
       }) => ({
         key,
         value,
         active,
+        type,
       })
     )
 

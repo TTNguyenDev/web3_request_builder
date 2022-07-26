@@ -17,7 +17,8 @@ export const safeParseJSON = (str: string): O.Option<object> =>
       params: item.inputs.map((i: any) => ({
         active: true,
         key: i.name,
-        value: i.param_type,
+        value: "",
+        type: i.param_type,
       })),
       headers: [],
       method: "POST",
@@ -39,9 +40,7 @@ export const safeParseJSON = (str: string): O.Option<object> =>
             request_type:
               item.state_mutability === "read"
                 ? "call_function"
-                : item.state_mutability === "write"
-                ? "write_function"
-                : "payable_function",
+                : "write_function",
             method_name: item.name,
             args_base64: Buffer.from(
               JSON.stringify(

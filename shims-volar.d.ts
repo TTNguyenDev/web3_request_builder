@@ -70,7 +70,6 @@ import HttpBody from "./components/http/Body.vue";
 import HttpBodyParameters from "./components/http/BodyParameters.vue";
 import HttpCodegenModal from "./components/http/CodegenModal.vue";
 import HttpContractAddress from "./components/http/ContractAddress.vue";
-import HttpDeposit from "./components/http/Deposit.vue";
 import HttpHeaders from "./components/http/Headers.vue";
 import HttpImportCurl from "./components/http/ImportCurl.vue";
 import HttpOAuth2Authorization from "./components/http/OAuth2Authorization.vue";
@@ -212,7 +211,6 @@ declare global {
         HttpBodyParameters: typeof HttpBodyParameters;
         HttpCodegenModal: typeof HttpCodegenModal;
         HttpContractAddress: typeof HttpContractAddress;
-        HttpDeposit: typeof HttpDeposit;
         HttpHeaders: typeof HttpHeaders;
         HttpImportCurl: typeof HttpImportCurl;
         HttpOAuth2Authorization: typeof HttpOAuth2Authorization;

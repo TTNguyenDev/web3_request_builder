@@ -1,194 +1,225 @@
 <template>
-  <div
-    class="sticky top-0 z-10 flex-none p-4 overflow-x-auto sm:flex sm:flex-shrink-0 sm:space-x-2 bg-primary hide-scrollbar"
-  >
-    <div
-      class="flex flex-1 overflow-auto border rounded min-w-52 border-divider whitespace-nowrap hide-scrollbar"
-    >
-      <div class="relative flex">
-        <label for="method">
-          <tippy
-            ref="methodOptions"
-            interactive
-            trigger="click"
-            theme="popover"
-            arrow
-          >
-            <template #trigger>
-              <span class="select-wrapper">
-                <input
-                  id="method"
-                  class="flex px-4 py-2 font-semibold rounded-l cursor-pointer transition text-secondaryDark w-26 bg-primaryLight"
-                  :value="newMethod"
-                  :readonly="!isCustomMethod"
-                  :placeholder="`${t('request.method')}`"
-                  @input="onSelectMethod($event.target.value)"
-                />
-              </span>
-            </template>
-            <div class="flex flex-col" role="menu">
-              <SmartItem
-                v-for="(method, index) in methods"
-                :key="`method-${index}`"
-                :label="method"
-                @click.native="onSelectMethod(method)"
-              />
-            </div>
-          </tippy>
-        </label>
+  <div class="sticky top-0 z-10 overflow-x-auto bg-primary hide-scrollbar">
+    <div class="px-4 pt-4 mb-2">
+      <div class="text-secondary font-semibold">
+        {{ t("tab.contract_address") }}
       </div>
-      <div
-        class="flex flex-1 overflow-auto border-l rounded-r transition border-divider bg-primaryLight whitespace-nowrap hide-scrollbar"
-      >
-        <SmartEnvInput
-          v-model="newEndpoint"
-          :placeholder="`${t('request.method_name')}`"
-          @enter="newSendRequest()"
-          @paste="onPasteUrl($event)"
+      <HttpContractAddress />
+    </div>
+    <div class="px-4 mb-4">
+      <div class="text-secondary font-semibold mb-2">Method Name</div>
+      <div class="flex-none sm:flex sm:flex-shrink-0 sm:space-x-2">
+        <div
+          class="flex flex-1 overflow-auto border rounded min-w-52 border-divider whitespace-nowrap hide-scrollbar"
+        >
+          <div class="relative flex">
+            <label for="method">
+              <tippy
+                ref="methodOptions"
+                interactive
+                trigger="click"
+                theme="popover"
+                arrow
+              >
+                <template #trigger>
+                  <span class="select-wrapper">
+                    <input
+                      id="method"
+                      class="flex px-4 py-2 font-semibold rounded-l cursor-pointer transition text-secondaryDark w-26 bg-primaryLight"
+                      :value="newMethod"
+                      :readonly="!isCustomMethod"
+                      :placeholder="`${t('request.method')}`"
+                      @input="onSelectMethod($event.target.value)"
+                    />
+                  </span>
+                </template>
+                <div class="flex flex-col" role="menu">
+                  <SmartItem
+                    v-for="(method, index) in methods"
+                    :key="`method-${index}`"
+                    :label="method"
+                    @click.native="onSelectMethod(method)"
+                  />
+                </div>
+              </tippy>
+            </label>
+          </div>
+          <div
+            class="flex flex-1 overflow-auto border-l rounded-r transition border-divider bg-primaryLight whitespace-nowrap hide-scrollbar"
+          >
+            <SmartEnvInput
+              v-model="newEndpoint"
+              :placeholder="`${t('request.method_name')}`"
+              @enter="newSendRequest()"
+              @paste="onPasteUrl($event)"
+            />
+          </div>
+        </div>
+
+        <div class="flex mt-2 sm:mt-0">
+          <ButtonPrimary
+            id="send"
+            class="flex-1 rounded min-w-20"
+            :label="`${!loading ? t('action.send') : t('action.cancel')}`"
+            @click.native="!loading ? newSendRequest() : cancelRequest()"
+          />
+          <!-- <span class="flex">
+            <tippy
+              ref="sendOptions"
+              interactive
+              trigger="click"
+              theme="popover"
+              arrow
+              :on-shown="() => sendTippyActions.focus()"
+            >
+              <template #trigger>
+                <ButtonPrimary
+                  class="rounded-l-none"
+                  filled
+                  svg="chevron-down"
+                />
+              </template>
+              <div
+                ref="sendTippyActions"
+                class="flex flex-col focus:outline-none"
+                tabindex="0"
+                role="menu"
+                @keyup.c="curl.$el.click()"
+                @keyup.s="show.$el.click()"
+                @keyup.delete="clearAll.$el.click()"
+                @keyup.escape="sendOptions.tippy().hide()"
+              >
+                <SmartItem
+                  ref="curl"
+                  :label="`${t('import.curl')}`"
+                  svg="file-code"
+                  :shortcut="['C']"
+                  @click.native="
+                    () => {
+                      showCurlImportModal = !showCurlImportModal
+                      sendOptions.tippy().hide()
+                    }
+                  "
+                />
+                <SmartItem
+                  ref="show"
+                  :label="`${t('show.code')}`"
+                  svg="code-2"
+                  :shortcut="['S']"
+                  @click.native="
+                    () => {
+                      showCodegenModal = !showCodegenModal
+                      sendOptions.tippy().hide()
+                    }
+                  "
+                />
+                <SmartItem
+                  ref="clearAll"
+                  :label="`${t('action.clear_all')}`"
+                  svg="rotate-ccw"
+                  :shortcut="['⌫']"
+                  @click.native="
+                    () => {
+                      clearContent()
+                      sendOptions.tippy().hide()
+                    }
+                  "
+                />
+              </div>
+            </tippy>
+          </span>
+          <ButtonSecondary
+            class="flex-1 ml-2 rounded rounded-r-none"
+            :label="COLUMN_LAYOUT ? `${t('request.save')}` : ''"
+            filled
+            svg="save"
+            @click.native="saveRequest()"
+          />
+          <span class="flex">
+            <tippy
+              ref="saveOptions"
+              interactive
+              trigger="click"
+              theme="popover"
+              arrow
+              :on-shown="() => saveTippyActions.focus()"
+            >
+              <template #trigger>
+                <ButtonSecondary
+                  svg="chevron-down"
+                  filled
+                  class="rounded rounded-l-none"
+                />
+              </template>
+              <input
+                id="request-name"
+                v-model="requestName"
+                :placeholder="`${t('request.name')}`"
+                name="request-name"
+                type="text"
+                autocomplete="off"
+                class="mb-2 input"
+                @keyup.enter="saveOptions.tippy().hide()"
+              />
+              <div
+                ref="saveTippyActions"
+                class="flex flex-col focus:outline-none"
+                tabindex="0"
+                role="menu"
+                @keyup.c="copyRequestAction.$el.click()"
+                @keyup.s="saveRequestAction.$el.click()"
+                @keyup.escape="saveOptions.tippy().hide()"
+              >
+                <SmartItem
+                  ref="copyRequestAction"
+                  :label="shareButtonText"
+                  :svg="copyLinkIcon"
+                  :loading="fetchingShareLink"
+                  :shortcut="['C']"
+                  @click.native="
+                    () => {
+                      copyRequest()
+                    }
+                  "
+                />
+                <SmartItem
+                  svg="link-2"
+                  :label="`${t('request.view_my_links')}`"
+                  to="/profile"
+                />
+                <hr />
+                <SmartItem
+                  ref="saveRequestAction"
+                  :label="`${t('request.save_as')}`"
+                  svg="folder-plus"
+                  :shortcut="['S']"
+                  @click.native="
+                    () => {
+                      showSaveRequestModal = true
+                      saveOptions.tippy().hide()
+                    }
+                  "
+                />
+              </div>
+            </tippy>
+          </span> -->
+        </div>
+        <HttpImportCurl
+          :text="curlText"
+          :show="showCurlImportModal"
+          @hide-modal="showCurlImportModal = false"
+        />
+        <HttpCodegenModal
+          :show="showCodegenModal"
+          @hide-modal="showCodegenModal = false"
+        />
+        <CollectionsSaveRequest
+          mode="rest"
+          :show="showSaveRequestModal"
+          @hide-modal="showSaveRequestModal = false"
         />
       </div>
     </div>
-
-    <div class="flex mt-2 sm:mt-0">
-      <ButtonPrimary
-        id="send"
-        class="flex-1 rounded-r-none min-w-20"
-        :label="`${!loading ? t('action.send') : t('action.cancel')}`"
-        @click.native="!loading ? newSendRequest() : cancelRequest()"
-      />
-      <span class="flex">
-        <tippy
-          ref="sendOptions"
-          interactive
-          trigger="click"
-          theme="popover"
-          arrow
-          :on-shown="() => sendTippyActions.focus()"
-        >
-          <template #trigger>
-            <ButtonPrimary class="rounded-l-none" filled svg="chevron-down" />
-          </template>
-          <div
-            ref="sendTippyActions"
-            class="flex flex-col focus:outline-none"
-            tabindex="0"
-            role="menu"
-            @keyup.c="curl.$el.click()"
-            @keyup.s="show.$el.click()"
-            @keyup.delete="clearAll.$el.click()"
-            @keyup.escape="sendOptions.tippy().hide()"
-          >
-            <SmartItem
-              ref="curl"
-              :label="`${t('import.curl')}`"
-              svg="file-code"
-              :shortcut="['C']"
-              @click.native="
-                () => {
-                  showCurlImportModal = !showCurlImportModal
-                  sendOptions.tippy().hide()
-                }
-              "
-            />
-            <SmartItem
-              ref="show"
-              :label="`${t('show.code')}`"
-              svg="code-2"
-              :shortcut="['S']"
-              @click.native="
-                () => {
-                  showCodegenModal = !showCodegenModal
-                  sendOptions.tippy().hide()
-                }
-              "
-            />
-            <SmartItem
-              ref="clearAll"
-              :label="`${t('action.clear_all')}`"
-              svg="rotate-ccw"
-              :shortcut="['⌫']"
-              @click.native="
-                () => {
-                  clearContent()
-                  sendOptions.tippy().hide()
-                }
-              "
-            />
-          </div>
-        </tippy>
-      </span>
-      <ButtonSecondary
-        class="flex-1 ml-2 rounded rounded-r-none"
-        :label="COLUMN_LAYOUT ? `${t('request.save')}` : ''"
-        filled
-        svg="save"
-        @click.native="saveRequest()"
-      />
-      <span class="flex">
-        <tippy
-          ref="saveOptions"
-          interactive
-          trigger="click"
-          theme="popover"
-          arrow
-          :on-shown="() => saveTippyActions.focus()"
-        >
-          <template #trigger>
-            <ButtonSecondary
-              svg="chevron-down"
-              filled
-              class="rounded rounded-l-none"
-            />
-          </template>
-          <input
-            id="request-name"
-            v-model="requestName"
-            :placeholder="`${t('request.name')}`"
-            name="request-name"
-            type="text"
-            autocomplete="off"
-            class="mb-2 input"
-            @keyup.enter="saveOptions.tippy().hide()"
-          />
-          <div
-            ref="saveTippyActions"
-            class="flex flex-col focus:outline-none"
-            tabindex="0"
-            role="menu"
-            @keyup.c="copyRequestAction.$el.click()"
-            @keyup.s="saveRequestAction.$el.click()"
-            @keyup.escape="saveOptions.tippy().hide()"
-          >
-            <SmartItem
-              ref="saveRequestAction"
-              :label="`${t('request.save_as')}`"
-              svg="folder-plus"
-              :shortcut="['S']"
-              @click.native="
-                () => {
-                  showSaveRequestModal = true
-                  saveOptions.tippy().hide()
-                }
-              "
-            />
-          </div>
-        </tippy>
-      </span>
-    </div>
-    <HttpImportCurl
-      :text="curlText"
-      :show="showCurlImportModal"
-      @hide-modal="showCurlImportModal = false"
-    />
-    <HttpCodegenModal
-      :show="showCodegenModal"
-      @hide-modal="showCodegenModal = false"
-    />
-    <CollectionsSaveRequest
-      mode="rest"
-      :show="showSaveRequestModal"
-      @hide-modal="showSaveRequestModal = false"
-    />
   </div>
 </template>
 
@@ -205,7 +236,7 @@ import {
   restMethod$,
   updateRESTMethod,
   resetRESTRequest,
-  useRESTRequestName,
+  // useRESTRequestName,
   getRESTSaveContext,
   getRESTRequest,
   restRequest$,
@@ -223,7 +254,7 @@ import {
 } from "~/helpers/utils/composables"
 import { defineActionHandler } from "~/helpers/actions"
 import { copyToClipboard } from "~/helpers/utils/clipboard"
-import { useSetting } from "~/newstore/settings"
+// import { useSetting } from "~/newstore/settings"
 import { createShortcode } from "~/helpers/backend/mutations/Shortcode"
 import { runMutation } from "~/helpers/backend/GQLClient"
 import { UpdateRequestDocument } from "~/helpers/backend/graphql"
@@ -251,15 +282,15 @@ const hasNavigatorShare = !!navigator.share
 
 // Template refs
 const methodOptions = ref<any | null>(null)
-const saveOptions = ref<any | null>(null)
-const sendOptions = ref<any | null>(null)
-const sendTippyActions = ref<any | null>(null)
-const saveTippyActions = ref<any | null>(null)
-const curl = ref<any | null>(null)
-const show = ref<any | null>(null)
-const clearAll = ref<any | null>(null)
-const copyRequestAction = ref<any | null>(null)
-const saveRequestAction = ref<any | null>(null)
+// const saveOptions = ref<any | null>(null)
+// const sendOptions = ref<any | null>(null)
+// const sendTippyActions = ref<any | null>(null)
+// const saveTippyActions = ref<any | null>(null)
+// const curl = ref<any | null>(null)
+// const show = ref<any | null>(null)
+// const clearAll = ref<any | null>(null)
+// const copyRequestAction = ref<any | null>(null)
+// const saveRequestAction = ref<any | null>(null)
 
 // Update Nuxt Loading bar
 watch(loading, () => {
@@ -273,11 +304,6 @@ watch(loading, () => {
 const newSendRequest = async () => {
   if (newEndpoint.value === "" || /^\s+$/.test(newEndpoint.value)) {
     toast.error(`${t("empty.endpoint")}`)
-    return
-  }
-
-  if (!localStorage.getItem("contract_address")) {
-    toast.error(`${t("empty.contract_address")}`)
     return
   }
 
@@ -377,6 +403,16 @@ const copyLinkIcon = refAutoReset<"share-2" | "copy" | "check">(
 
 const shareLink = ref<string | null>("")
 const fetchingShareLink = ref(false)
+
+// const shareButtonText = computed(() => {
+//   if (shareLink.value) {
+//     return shareLink.value
+//   } else if (fetchingShareLink.value) {
+//     return t("state.loading")
+//   } else {
+//     return t("request.copy_link")
+//   }
+// })
 
 const request = useReadonlyStream(restRequest$, getRESTRequest())
 
@@ -528,7 +564,8 @@ const isCustomMethod = computed(() => {
   return newMethod.value === "CUSTOM" || !methods.includes(newMethod.value)
 })
 
-const requestName = useRESTRequestName()
+// const requestName = useRESTRequestName()
 
-const COLUMN_LAYOUT = useSetting("COLUMN_LAYOUT")
+// const COLUMN_LAYOUT = useSetting("COLUMN_LAYOUT")
+//
 </script>
