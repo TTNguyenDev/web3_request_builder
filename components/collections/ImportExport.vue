@@ -21,9 +21,9 @@
           <div
             v-for="(step, index) in importerSteps"
             :key="`step-${index}`"
-            class="flex flex-col space-y-8"
+            class="flex flex-col space-y-4"
           >
-            <div class="space-y-4">
+            <div class="space-y-2">
               <p class="flex items-center">
                 <span
                   class="inline-flex items-center justify-center flex-shrink-0 mr-4 border-4 rounded-full border-primary text-dividerDark"
@@ -49,10 +49,13 @@
                 />
               </p>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-2 mt-2">
               <p class="flex items-center">
                 <span
                   class="inline-flex items-center justify-center flex-shrink-0 mr-4 border-4 rounded-full border-primary text-dividerDark"
+                  :class="{
+                    '!text-green-500': contractAddress,
+                  }"
                 >
                   <i class="material-icons">check_circle</i>
                 </span>
