@@ -6,7 +6,7 @@
     max-width="sm:max-w-md"
     @close="hideModal"
   >
-    <template #actions>
+    <!-- <template #actions>
       <ButtonSecondary
         v-if="importerType !== null"
         v-tippy="{ theme: 'tooltip' }"
@@ -14,16 +14,16 @@
         svg="arrow-left"
         @click.native="resetImport"
       />
-    </template>
+    </template> -->
     <template #body>
-      <div v-if="importerType !== null" class="flex flex-col">
+      <div class="flex flex-col">
         <div class="flex flex-col px-2 pb-6">
           <div
             v-for="(step, index) in importerSteps"
             :key="`step-${index}`"
             class="flex flex-col space-y-8"
           >
-            <div v-if="step.name === 'FILE_IMPORT'" class="space-y-4">
+            <div class="space-y-4">
               <p class="flex items-center">
                 <span
                   class="inline-flex items-center justify-center flex-shrink-0 mr-4 border-4 rounded-full border-primary text-dividerDark"
@@ -49,7 +49,29 @@
                 />
               </p>
             </div>
-            <div v-else-if="step.name === 'URL_IMPORT'" class="space-y-4">
+            <div class="space-y-4">
+              <p class="flex items-center">
+                <span
+                  class="inline-flex items-center justify-center flex-shrink-0 mr-4 border-4 rounded-full border-primary text-dividerDark"
+                >
+                  <i class="material-icons">check_circle</i>
+                </span>
+                <span> Contract address </span>
+              </p>
+              <div class="flex flex-col ml-10">
+                <div class="flex flex-1 border-b border-dividerLight">
+                  <div class="w-full">
+                    <div class="flex flex-1 border border-dividerLight">
+                      <SmartEnvInput
+                        v-model="contractAddress"
+                        placeholder="Address"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div v-else-if="step.name === 'URL_IMPORT'" class="space-y-4">
               <p class="flex items-center">
                 <span
                   class="inline-flex items-center justify-center flex-shrink-0 mr-4 border-4 rounded-full border-primary text-dividerDark"
@@ -96,7 +118,7 @@
                   </option>
                 </select>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         <ButtonPrimary
@@ -107,7 +129,7 @@
           @click.native="finishImport"
         />
       </div>
-      <div v-else class="flex flex-col px-2">
+      <!-- <div v-else class="flex flex-col px-2">
         <SmartExpand>
           <template #body>
             <SmartItem
@@ -157,7 +179,7 @@
             />
           </span>
         </div>
-      </div>
+      </div> -->
     </template>
   </SmartModal>
 </template>
@@ -342,10 +364,13 @@ const importerModules = computed(() =>
   )
 )
 
-const importerType = ref<number | null>(null)
+const importerType = ref<number | null>(0)
+const contractAddress = ref<string>("")
 
-const importerModule = computed(() =>
-  importerType.value !== null ? importerModules.value[importerType.value] : null
+const importerModule = computed(
+  () =>
+    // importerType.value !== null ? importerModules.value[importerType.value] : null
+    importerModules.value[0]
 )
 
 const importerSteps = computed(() => importerModule.value?.steps ?? null)
@@ -365,6 +390,16 @@ const importerAction = async (stepResults: any[]) => {
       importToTeams(result.right)
       fileImported()
     } else {
+      console.log("contractAddress", contractAddress.value)
+      console.log("adasdas", result.right)
+      const restCollections = result.right.map((item) => {
+        item.requests = item.requests.map((req) => {
+          // @ts-ignore
+          req.auth.token = contractAddress.value
+          return req
+        })
+        return item
+      })
       appendRESTCollections(result.right)
       fileImported()
     }
