@@ -13,14 +13,25 @@
     >
       <HttpParameters />
     </SmartTab>
+    <SmartTab
+      v-if="method === 'PAYABLE'"
+      :id="'deposit'"
+      :label="`${$t('tab.deposit')}`"
+    >
+      <HttpDeposit />
+    </SmartTab>
   </SmartTabs>
 </template>
 
 <script setup lang="ts">
 import { ref } from "@nuxtjs/composition-api"
 import { map } from "rxjs/operators"
-import { useReadonlyStream } from "~/helpers/utils/composables"
-import { restActiveParamsCount$ } from "~/newstore/RESTSession"
+import { useReadonlyStream, useStream } from "~/helpers/utils/composables"
+import {
+  restActiveParamsCount$,
+  restMethod$,
+  updateRESTMethod,
+} from "~/newstore/RESTSession"
 
 export type RequestOptionTabs =
   | "params"
@@ -43,4 +54,5 @@ const newActiveParamsCount$ = useReadonlyStream(
   ),
   null
 )
+const method = useStream(restMethod$, "", updateRESTMethod)
 </script>

@@ -9,10 +9,10 @@
     "pnpm": ">=3"
   },
   "scripts": {
-    "dev": "pnpm exec npm-run-all -p -l dev:*",
+    "dev": "nuxt",
     "dev:nuxt": "nuxt",
     "dev:gql-codegen": "graphql-codegen --config gql-codegen.yml --watch",
-    "build": "vue-tsc --noEmit && nuxt build",
+    "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate --modern",
     "analyze": "npx nuxt build -a",
@@ -70,6 +70,7 @@
     "acorn": "^8.7.0",
     "acorn-walk": "^8.2.0",
     "axios": "^0.26.1",
+    "bn.js": "^5.2.1",
     "core-js": "^3.22.0",
     "esprima": "^4.0.1",
     "firebase": "^9.6.11",
@@ -143,6 +144,7 @@
     "@relmify/jest-fp-ts": "^2.0.1",
     "@sentry/browser": "^6.19.6",
     "@testing-library/jest-dom": "^5.16.4",
+    "@types/bn.js": "^5.1.0",
     "@types/codemirror": "^5.60.5",
     "@types/cookie": "^0.4.1",
     "@types/esprima": "^4.0.3",
@@ -196,6 +198,7 @@
     "typescript": "^4.6.3",
     "vue-jest": "^3.0.7",
     "vue-template-babel-compiler": "^1.1.3",
+    "vue-tsc": "^0.37.3",
     "worker-loader": "^3.0.8"
   }
 }

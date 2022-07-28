@@ -239,6 +239,7 @@ function createExpectation(
         "function",
       ].includes(expectedType)
     ) {
+      // eslint-disable-next-line valid-typeof
       let assertion = typeof expectVal === expectedType
       if (negated) assertion = !assertion
 

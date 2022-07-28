@@ -77,7 +77,6 @@ import { applySetting, useSetting } from "~/newstore/settings"
 import { logPageView } from "~/helpers/fb/analytics"
 import { hookKeybindingsListener } from "~/helpers/keybindings"
 import { defineActionHandler } from "~/helpers/actions"
-import { useSentry } from "~/helpers/sentry"
 import { useColorMode } from "~/helpers/utils/composables"
 import {
   changeExtensionStatus,
@@ -85,6 +84,7 @@ import {
 } from "~/newstore/HoppExtension"
 
 import { defineSubscribableObject } from "~/helpers/strategies/ExtensionStrategy"
+import { BlockChainConnector } from "~/blockchain"
 
 function appLayout() {
   const rightSidebar = useSetting("SIDEBAR")
@@ -109,23 +109,6 @@ function appLayout() {
       columnLayout.value = true
     }
   })
-}
-
-function setupSentry() {
-  const sentry = useSentry()
-  const telemetryEnabled = useSetting("TELEMETRY_ENABLED")
-
-  // Disable sentry error reporting if no telemetry allowed
-  watch(
-    telemetryEnabled,
-    () => {
-      const client = sentry.getCurrentHub()?.getClient()
-      if (!client) return
-
-      client.getOptions().enabled = telemetryEnabled.value
-    },
-    { immediate: true }
-  )
 }
 
 function updateThemes() {
@@ -277,8 +260,6 @@ export default defineComponent({
 
     const { spacerClass } = updateThemes()
 
-    setupSentry()
-
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const mdAndLarger = breakpoints.greater("md")
 
@@ -316,14 +297,6 @@ export default defineComponent({
   },
   async mounted() {
     performMigrations()
-    console.info(
-      "%cWe ❤︎ open source!",
-      "background-color:white;padding:8px 16px;border-radius:8px;font-size:32px;color:red;"
-    )
-    console.info(
-      "%cContribute: https://github.com/hoppscotch/hoppscotch",
-      "background-color:black;padding:4px 8px;border-radius:8px;font-size:16px;color:white;"
-    )
 
     const workbox = await (window as any).$workbox
     if (workbox) {
@@ -350,6 +323,8 @@ export default defineComponent({
         }
       })
     }
+
+    await BlockChainConnector.instance.initNear()
 
     initUserInfo()
 

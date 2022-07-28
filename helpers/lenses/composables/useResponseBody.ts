@@ -22,6 +22,7 @@ export default function useResponseBody(
       const rawStr = res.replace(/\0+$/, "")
       if (formatData) {
         const rawJSON = JSON.parse(rawStr)
+        if (!rawJSON.result) return rawStr
         const data = JSON.parse(
           Buffer.from(rawJSON.result.result).toString("utf8")
         )

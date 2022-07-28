@@ -31,24 +31,6 @@ module.exports = {
     "import/no-named-as-default-member": "off",
     "import/default": "off",
     "no-undef": "off",
-    // localStorage block
-    "no-restricted-globals": [
-      "error",
-      {
-        name: "localStorage",
-        message:
-          "Do not use 'localStorage' directly. Please use localpersistence.ts functions or stores",
-      },
-    ],
-    // window.localStorage block
-    "no-restricted-syntax": [
-      "error",
-      {
-        selector: "CallExpression[callee.object.property.name='localStorage']",
-        message:
-          "Do not use 'localStorage' directly. Please use localpersistence.ts functions or stores",
-      },
-    ],
     "no-prototype-builtins": 0,
     "no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars": 0,

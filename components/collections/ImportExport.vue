@@ -393,12 +393,13 @@ const importerAction = async (stepResults: any[]) => {
       importToTeams(result.right)
       fileImported()
     } else {
-      console.log("contractAddress", contractAddress.value)
-      console.log("adasdas", result.right)
       const restCollections = result.right.map((item) => {
         item.requests = item.requests.map((req) => {
           // @ts-ignore
           req.auth.token = contractAddress.value
+          const newBody: any = JSON.parse(req.body.body as any)
+          newBody.params.account_id = contractAddress.value
+          req.body.body = JSON.stringify(newBody)
           return req
         })
         return item
