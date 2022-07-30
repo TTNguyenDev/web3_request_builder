@@ -28,7 +28,7 @@ export default {
   ssr: false,
 
   // Target (https://go.nuxtjs.dev/config-target)
-  target: "static",
+  target: "server",
 
   // Default: localhost
   server: {
@@ -122,8 +122,7 @@ export default {
     "@nuxtjs/gtm",
     // https://github.com/windicss/windicss
     "nuxt-windicss",
-    // https://github.com/nuxt-community/color-mode-module
-    "@nuxtjs/color-mode",
+
     // https://github.com/nuxt-community/svg-module
     "@nuxtjs/svg",
     // https: //github.com/nuxt-community/google-fonts-module
@@ -151,6 +150,8 @@ export default {
     "@nuxtjs/robots",
     // https://github.com/nuxt-community/sitemap-module
     // "@nuxtjs/sitemap",
+    // https://github.com/nuxt-community/color-mode-module
+    "@nuxtjs/color-mode",
   ],
 
   // PWA module configuration (https://pwa.nuxtjs.org/setup)
