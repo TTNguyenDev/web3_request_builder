@@ -1,4 +1,36 @@
-const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.4/workbox/workbox-sw.js","importScripts":[],"config":{"debug":false},"cacheOptions":{"cacheId":"hoppscotch-app-prod","directoryIndex":"/","revision":"DpfN7x4EZFO3"},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[{"revision":"DpfN7x4EZFO3","url":"/?source=pwa"}],"runtimeCaching":[{"urlPattern":"/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null,"pagesURLPattern":"/","offlineStrategy":"NetworkFirst"}
+const options = {
+  workboxURL:
+    "https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.4/workbox/workbox-sw.js",
+  importScripts: [],
+  config: { debug: false },
+  cacheOptions: {
+    cacheId: "hoppscotch-app-prod",
+    directoryIndex: "/",
+    revision: "Bv9Hufsje8j4",
+  },
+  clientsClaim: true,
+  skipWaiting: true,
+  cleanupOutdatedCaches: true,
+  offlineAnalytics: false,
+  preCaching: [{ revision: "Bv9Hufsje8j4", url: "/?source=pwa" }],
+  runtimeCaching: [
+    {
+      urlPattern: "/_nuxt/",
+      handler: "CacheFirst",
+      method: "GET",
+      strategyPlugins: [],
+    },
+    {
+      urlPattern: "/",
+      handler: "NetworkFirst",
+      method: "GET",
+      strategyPlugins: [],
+    },
+  ],
+  offlinePage: null,
+  pagesURLPattern: "/",
+  offlineStrategy: "NetworkFirst",
+}
 
 importScripts(...[options.workboxURL, ...options.importScripts])
 
@@ -11,7 +43,7 @@ offlinePage(workbox, options)
 routingExtensions(workbox, options)
 
 function getProp(obj, prop) {
-  return prop.split('.').reduce((p, c) => p[c], obj)
+  return prop.split(".").reduce((p, c) => p[c], obj)
 }
 
 function initWorkbox(workbox, options) {
@@ -46,38 +78,48 @@ function initWorkbox(workbox, options) {
 
 function precacheAssets(workbox, options) {
   if (options.preCaching.length) {
-    workbox.precaching.precacheAndRoute(options.preCaching, options.cacheOptions)
+    workbox.precaching.precacheAndRoute(
+      options.preCaching,
+      options.cacheOptions
+    )
   }
 }
-
 
 function runtimeCaching(workbox, options) {
   const requestInterceptor = {
     requestWillFetch({ request }) {
-      if (request.cache === 'only-if-cached' && request.mode === 'no-cors') {
-        return new Request(request.url, { ...request, cache: 'default', mode: 'no-cors' })
+      if (request.cache === "only-if-cached" && request.mode === "no-cors") {
+        return new Request(request.url, {
+          ...request,
+          cache: "default",
+          mode: "no-cors",
+        })
       }
       return request
     },
     fetchDidFail(ctx) {
       ctx.error.message =
-        '[workbox] Network request for ' + ctx.request.url + ' threw an error: ' + ctx.error.message
-      console.error(ctx.error, 'Details:', ctx)
+        "[workbox] Network request for " +
+        ctx.request.url +
+        " threw an error: " +
+        ctx.error.message
+      console.error(ctx.error, "Details:", ctx)
     },
     handlerDidError(ctx) {
       ctx.error.message =
         `[workbox] Network handler threw an error: ` + ctx.error.message
-      console.error(ctx.error, 'Details:', ctx)
+      console.error(ctx.error, "Details:", ctx)
       return null
-    }
+    },
   }
 
   for (const entry of options.runtimeCaching) {
     const urlPattern = new RegExp(entry.urlPattern)
-    const method = entry.method || 'GET'
+    const method = entry.method || "GET"
 
-    const plugins = (entry.strategyPlugins || [])
-      .map(p => new (getProp(workbox, p.use))(...p.config))
+    const plugins = (entry.strategyPlugins || []).map(
+      (p) => new (getProp(workbox, p.use))(...p.config)
+    )
 
     plugins.unshift(requestInterceptor)
 
@@ -92,23 +134,20 @@ function runtimeCaching(workbox, options) {
 function offlinePage(workbox, options) {
   if (options.offlinePage) {
     // Register router handler for offlinePage
-    workbox.routing.registerRoute(new RegExp(options.pagesURLPattern), ({ request, event }) => {
-      const strategy = new workbox.strategies[options.offlineStrategy]
-      return strategy
-        .handle({ request, event })
-        .catch(() => caches.match(options.offlinePage))
-    })
+    workbox.routing.registerRoute(
+      new RegExp(options.pagesURLPattern),
+      ({ request, event }) => {
+        const strategy = new workbox.strategies[options.offlineStrategy]()
+        return strategy
+          .handle({ request, event })
+          .catch(() => caches.match(options.offlinePage))
+      }
+    )
   }
 }
 
-function workboxExtensions(workbox, options) {
-  
-}
+function workboxExtensions(workbox, options) {}
 
-function cachingExtensions(workbox, options) {
-  
-}
+function cachingExtensions(workbox, options) {}
 
-function routingExtensions(workbox, options) {
-  
-}
+function routingExtensions(workbox, options) {}
