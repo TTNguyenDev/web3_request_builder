@@ -150,7 +150,7 @@ export default {
     // https://github.com/nuxt-community/robots-module
     "@nuxtjs/robots",
     // https://github.com/nuxt-community/sitemap-module
-    "@nuxtjs/sitemap",
+    // "@nuxtjs/sitemap",
   ],
 
   // PWA module configuration (https://pwa.nuxtjs.org/setup)
