@@ -1,4 +1,4 @@
-import languages from "./languages"
+import languages from "./languages.json"
 import pkg from "./package.json"
 
 require("dotenv").config()
