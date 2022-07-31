@@ -275,6 +275,7 @@
 
 <script setup lang="ts">
 import { computed, ref, Ref } from "@nuxtjs/composition-api"
+import { BlockChainConnector } from "~/blockchain"
 import {
   HoppGQLAuthAPIKey,
   HoppGQLAuthBasic,
@@ -286,7 +287,10 @@ import { gqlAuth$, setGQLAuth } from "~/newstore/GQLSession"
 
 const auth = useStream(
   gqlAuth$,
-  { authType: "none", authActive: true },
+  {
+    authType: "none",
+    authActive: true,
+  },
   setGQLAuth
 )
 const authType = pluckRef(auth, "authType")

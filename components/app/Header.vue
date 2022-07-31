@@ -97,6 +97,10 @@
       </div>
     </header>
     <AppAnnouncement v-if="!network.isOnline" />
+    <CollectionsLogin
+      :show="showModalLogin"
+      @hide-modal="displayModalLogin(false)"
+    />
   </div>
 </template>
 
@@ -127,14 +131,6 @@ const showInstallPrompt = ref(() => Promise.resolve()) // Async no-op till it is
 const network = reactive(useNetwork())
 
 const currentUser = useReadonlyStream(currentUserInfo$, null)
-
-const handleLogin = () => {
-  // eslint-disable-next-line no-restricted-globals
-  const contractAddress = localStorage.getItem("contract_address")
-  if (contractAddress)
-    BlockChainConnector.instance.walletConnection.requestSignIn(contractAddress)
-  else toast.error(`${t("empty.contract_address")}`)
-}
 
 onMounted(() => {
   // Initializes the PWA code - checks if the app is installed,
@@ -172,4 +168,13 @@ const profile = ref<any | null>(null)
 const settings = ref<any | null>(null)
 const logout = ref<any | null>(null)
 const options = ref<any | null>(null)
+const showModalLogin = ref<boolean>(false)
+
+const displayModalLogin = (shouldDisplay: boolean) => {
+  showModalLogin.value = shouldDisplay
+}
+
+const handleLogin = () => {
+  displayModalLogin(true)
+}
 </script>

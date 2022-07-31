@@ -3,7 +3,11 @@
     <div class="flex flex-1 border-b border-dividerLight">
       <div class="w-full mt-2">
         <div class="flex flex-1 border border-dividerLight">
-          <SmartEnvInput v-model="bearerToken" placeholder="Address" />
+          <SmartEnvInput
+            v-model="bearerToken"
+            placeholder="Address"
+            readonly="true"
+          />
         </div>
       </div>
     </div>
@@ -12,6 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, Ref } from "@nuxtjs/composition-api"
+import { BlockChainConnector } from "~/blockchain"
 import {
   HoppRESTAuthBasic,
   HoppRESTAuthBearer,
@@ -58,6 +63,9 @@ export default defineComponent({
         authActive: true,
       }
     }
+
+    bearerToken.value = BlockChainConnector.currentContractAddress
+
     return {
       auth,
       authType,

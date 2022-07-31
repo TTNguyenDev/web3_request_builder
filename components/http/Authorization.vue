@@ -258,6 +258,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, Ref } from "@nuxtjs/composition-api"
+import { BlockChainConnector } from "~/blockchain"
 import {
   HoppRESTAuthBasic,
   HoppRESTAuthBearer,
@@ -272,7 +273,10 @@ export default defineComponent({
   setup() {
     const auth = useStream(
       restAuth$,
-      { authType: "none", authActive: true },
+      {
+        authType: "none",
+        authActive: true,
+      },
       setRESTAuth
     )
     const authType = pluckRef(auth, "authType")

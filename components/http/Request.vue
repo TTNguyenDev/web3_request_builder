@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 z-10 overflow-x-auto bg-primary hide-scrollbar">
+  <div class="sticky top-0 z-10 bg-primary hide-scrollbar">
     <div class="px-4 pt-4 mb-2">
       <div class="text-secondary font-semibold">
         {{ t("tab.contract_address") }}

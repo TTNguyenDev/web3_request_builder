@@ -45,6 +45,7 @@ export default defineComponent({
   methods: {
     async logout() {
       try {
+        BlockChainConnector.clearCurrentContractAddress()
         await BlockChainConnector.instance.walletConnection.signOut()
         window.location.reload()
         this.$toast.success(`${this.$t("auth.logged_out")}`)

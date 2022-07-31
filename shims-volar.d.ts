@@ -26,6 +26,7 @@ import CollectionsEdit from "./components/collections/Edit.vue";
 import CollectionsEditFolder from "./components/collections/EditFolder.vue";
 import CollectionsEditRequest from "./components/collections/EditRequest.vue";
 import CollectionsImportExport from "./components/collections/ImportExport.vue";
+import CollectionsLogin from "./components/collections/Login.vue";
 import CollectionsSaveRequest from "./components/collections/SaveRequest.vue";
 import CollectionsGraphqlAdd from "./components/collections/graphql/Add.vue";
 import CollectionsGraphqlAddFolder from "./components/collections/graphql/AddFolder.vue";
@@ -168,6 +169,7 @@ declare global {
         CollectionsEditFolder: typeof CollectionsEditFolder;
         CollectionsEditRequest: typeof CollectionsEditRequest;
         CollectionsImportExport: typeof CollectionsImportExport;
+        CollectionsLogin: typeof CollectionsLogin;
         CollectionsSaveRequest: typeof CollectionsSaveRequest;
         CollectionsGraphqlAdd: typeof CollectionsGraphqlAdd;
         CollectionsGraphqlAddFolder: typeof CollectionsGraphqlAddFolder;

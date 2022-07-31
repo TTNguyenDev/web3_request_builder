@@ -49,7 +49,7 @@
                 />
               </p>
             </div>
-            <div class="space-y-2 mt-2">
+            <!-- <div class="space-y-2 mt-2">
               <p class="flex items-center">
                 <span
                   class="inline-flex items-center justify-center flex-shrink-0 mr-4 border-4 rounded-full border-primary text-dividerDark"
@@ -73,7 +73,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <!-- <div v-else-if="step.name === 'URL_IMPORT'" class="space-y-4">
               <p class="flex items-center">
                 <span
@@ -368,7 +368,7 @@ const importerModules = computed(() =>
 )
 
 const importerType = ref<number | null>(0)
-const contractAddress = ref<string>("")
+// const contractAddress = ref<string>("")
 
 const importerModule = computed(
   () =>
@@ -396,9 +396,9 @@ const importerAction = async (stepResults: any[]) => {
       const restCollections = result.right.map((item) => {
         item.requests = item.requests.map((req) => {
           // @ts-ignore
-          req.auth.token = contractAddress.value
+          // req.auth.token = contractAddress.value
           const newBody: any = JSON.parse(req.body.body as any)
-          newBody.params.account_id = contractAddress.value
+          // newBody.params.account_id = contractAddress.value
           req.body.body = JSON.stringify(newBody)
           return req
         })

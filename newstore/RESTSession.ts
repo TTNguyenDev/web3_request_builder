@@ -16,6 +16,7 @@ import { useStream } from "~/helpers/utils/composables"
 import { HoppTestResult } from "~/helpers/types/HoppTestResult"
 import { HoppRequestSaveContext } from "~/helpers/types/HoppRequestSaveContext"
 import { applyBodyTransition } from "~/helpers/rules/BodyTransition"
+import { BlockChainConnector } from "~/blockchain"
 
 type RESTSession = {
   request: HoppRESTRequest
@@ -34,6 +35,7 @@ export const getDefaultRESTRequest = (): HoppRESTRequest => ({
   auth: {
     authType: "none",
     authActive: true,
+    token: BlockChainConnector.currentContractAddress,
   },
   preRequestScript: "",
   testScript: "",
@@ -43,7 +45,7 @@ export const getDefaultRESTRequest = (): HoppRESTRequest => ({
       method: "query",
       params: {
         request_type: "call_function",
-        account_id: "",
+        account_id: BlockChainConnector.currentContractAddress,
         method_name: "",
         args_base64: "",
         finality: "optimistic",
@@ -230,8 +232,6 @@ const dispatchers = defineDispatchers({
     reqBody.params.account_id = newAuth.token
     const newReqBody = JSON.stringify(reqBody)
     body.body = newReqBody
-    // @ts-ignore
-    localStorage.setItem("contract_address", newAuth.token || "")
     return {
       request: {
         ...curr.request,
@@ -370,6 +370,18 @@ const restSessionStore = new DispatchingStore(defaultRESTSession, dispatchers)
 
 export function getRESTRequest() {
   const request = { ...restSessionStore.subject$.value.request }
+
+  const body = request.body
+  const reqBody = JSON.parse(body.body as string)
+  // @ts-ignore
+  reqBody.params.account_id = BlockChainConnector.currentContractAddress
+  const newReqBody = JSON.stringify(reqBody)
+  body.body = newReqBody
+
+  const auth = request.auth
+  // @ts-ignore
+  auth.token = BlockChainConnector.currentContractAddress
+
   console.log(request)
   return request
 }
@@ -378,6 +390,17 @@ export function setRESTRequest(
   req: HoppRESTRequest,
   saveContext?: HoppRequestSaveContext | null
 ) {
+  const body = req.body
+  const reqBody = JSON.parse(body.body as string)
+  // @ts-ignore
+  reqBody.params.account_id = BlockChainConnector.currentContractAddress
+  const newReqBody = JSON.stringify(reqBody)
+  body.body = newReqBody
+
+  const auth = req.auth
+  // @ts-ignore
+  auth.token = BlockChainConnector.currentContractAddress
+
   restSessionStore.dispatch({
     dispatcher: "setRequest",
     payload: {
